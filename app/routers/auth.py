@@ -8,6 +8,7 @@ from passlib.context import CryptContext
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
+from app import schemas, crud
 from app.crud import get_user_by_username
 from app.dependencies import (ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM,
                               SECRET_KEY,  get_db)
@@ -48,6 +49,14 @@ def authenticate_user(db: Session, username: str, password: str):
     if not verify_password(password, user.hashed_password):
         return False
     return user
+
+
+@router.post("/register/", response_model=schemas.User)
+def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_username(db, username=user.username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="User name already registered")
+    return crud.create_user(db=db, user=user)
 
 
 @router.post("/token", response_model=Token)
