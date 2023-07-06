@@ -1,4 +1,4 @@
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -7,7 +7,8 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import BaseModel
 
-from app.dependencies import fake_users_db, ACCESS_TOKEN_EXPIRE_MINUTES, SECRET_KEY, ALGORITHM, get_user
+from app.dependencies import (ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM,
+                              SECRET_KEY, fake_users_db, get_user)
 
 router = APIRouter()
 
@@ -49,7 +50,7 @@ def authenticate_user(fake_db, username: str, password: str):
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ):
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
