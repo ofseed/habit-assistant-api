@@ -5,7 +5,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from passlib.context import CryptContext
-from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app import schemas, crud, models
@@ -19,11 +18,6 @@ router = APIRouter(
 )
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 
 def get_password_hash(password: str):
@@ -71,7 +65,7 @@ def register(db: Annotated[Session, Depends(get_db)], user: schemas.UserCreate):
     return create_user(db=db, user=user)
 
 
-@router.post("/login", response_model=Token)
+@router.post("/login", response_model=schemas.Token)
 async def login(
         db: Annotated[Session, Depends(get_db)],
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
