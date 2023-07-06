@@ -6,7 +6,7 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
-from app.crud import get_user_by_username
+from app.crud import get_user, get_user_by_username
 from app.database import SessionLocal
 from app.models import User
 
@@ -26,7 +26,7 @@ def get_db():
 
 
 class TokenData(BaseModel):
-    username: str | None = None
+    id: int | None = None
 
 
 async def get_current_user(
@@ -40,13 +40,13 @@ async def get_current_user(
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
+        id: str = payload.get("sub")
+        if id is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(id=id)
     except JWTError:
         raise credentials_exception
-    user = get_user_by_username(db, username=token_data.username)
+    user = get_user(db, user_id=token_data.id)
     if user is None:
         raise credentials_exception
     return user
