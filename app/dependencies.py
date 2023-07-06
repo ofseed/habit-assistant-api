@@ -6,6 +6,7 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 
 from app.database import SessionLocal
+from app.models import User
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -30,15 +31,6 @@ def get_db():
         db.close()
 
 
-class User(BaseModel):
-    username: str
-    disabled: bool | None = None
-
-
-class UserInDB(User):
-    hashed_password: str
-
-
 class TokenData(BaseModel):
     username: str | None = None
 
@@ -46,7 +38,7 @@ class TokenData(BaseModel):
 def get_user(db, username: str):
     if username in db:
         user_dict = db[username]
-        return UserInDB(**user_dict)
+        return User(**user_dict)
 
 
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
