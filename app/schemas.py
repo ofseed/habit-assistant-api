@@ -19,7 +19,7 @@ class Item(ItemBase):
 
 
 class UserBase(BaseModel):
-    email: str
+    username: str
 
 
 class UserCreate(UserBase):
@@ -28,7 +28,7 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
-    is_active: bool
+    disabled: bool
     items: list[Item] = []
 
     class Config:

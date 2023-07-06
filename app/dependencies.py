@@ -14,8 +14,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 fake_users_db = {
     "johndoe": {
         "username": "johndoe",
-        "full_name": "John Doe",
-        "email": "johndoe@example.com",
         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
         "disabled": False,
     }
@@ -24,8 +22,6 @@ fake_users_db = {
 
 class User(BaseModel):
     username: str
-    email: str | None = None
-    full_name: str | None = None
     disabled: bool | None = None
 
 
