@@ -59,8 +59,8 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return crud.create_user(db=db, user=user)
 
 
-@router.post("/token", response_model=Token)
-async def login_for_access_token(
+@router.post("/login", response_model=Token)
+async def login(
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
         db: Annotated[Session, Depends(get_db)]
 ):
