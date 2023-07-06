@@ -13,7 +13,10 @@ from app.crud import get_user_by_username
 from app.dependencies import (ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM,
                               SECRET_KEY,  get_db)
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/auth",
+    tags=["auth"],
+)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
