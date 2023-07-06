@@ -26,15 +26,15 @@ class Token(BaseModel):
     token_type: str
 
 
-def get_password_hash(password):
+def get_password_hash(password: str):
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password, hashed_password):
+def verify_password(plain_password: str, hashed_password: str):
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_user(db: Session, user: schemas.UserCreate):
+def create_user(db: Annotated[Session, Depends(get_db)], user: schemas.UserCreate):
     hashed_password = get_password_hash(user.password)
     db_user = models.User(username=user.username, hashed_password=hashed_password)
     db.add(db_user)
@@ -54,7 +54,7 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def authenticate_user(db: Session, username: str, password: str):
+def authenticate_user(db: Annotated[Session, Depends(get_db)], username: str, password: str):
     user = get_user_by_username(db, username)
     if not user:
         return False
@@ -64,7 +64,7 @@ def authenticate_user(db: Session, username: str, password: str):
 
 
 @router.post("/register/", response_model=schemas.User)
-def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+def register(db: Annotated[Session, Depends(get_db)], user: schemas.UserCreate):
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="User name already registered")
@@ -73,8 +73,8 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/login", response_model=Token)
 async def login(
+        db: Annotated[Session, Depends(get_db)],
         form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-        db: Annotated[Session, Depends(get_db)]
 ):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
