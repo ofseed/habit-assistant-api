@@ -7,10 +7,10 @@ from jose import jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
-from app import schemas, crud, models
+from app import crud, models, schemas
 from app.crud import get_user_by_username
 from app.dependencies import (ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM,
-                              SECRET_KEY,  get_db)
+                              SECRET_KEY, get_db)
 
 router = APIRouter(
     prefix="/auth",
@@ -48,7 +48,9 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
     return encoded_jwt
 
 
-def authenticate_user(db: Annotated[Session, Depends(get_db)], username: str, password: str):
+def authenticate_user(
+    db: Annotated[Session, Depends(get_db)], username: str, password: str
+):
     user = get_user_by_username(db, username)
     if not user:
         return False
@@ -67,8 +69,8 @@ def register(db: Annotated[Session, Depends(get_db)], user: schemas.UserCreate):
 
 @router.post("/login", response_model=schemas.Token)
 async def login(
-        db: Annotated[Session, Depends(get_db)],
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Annotated[Session, Depends(get_db)],
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
 ):
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
