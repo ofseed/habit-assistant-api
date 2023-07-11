@@ -53,9 +53,9 @@ def authenticate_user(
 ):
     user = get_user_by_username(db, username)
     if not user:
-        return False
+        return None
     if not verify_password(password, user.hashed_password):
-        return False
+        return None
     return user
 
 
