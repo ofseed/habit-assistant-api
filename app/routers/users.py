@@ -16,8 +16,8 @@ async def read_users_me(
     return current_user
 
 
-@router.get("/me/items")
-async def read_own_items(
+@router.get("/me/status")
+async def read_own_status(
     current_user: Annotated[schemas.User, Depends(get_current_active_user)]
 ):
     return [{"item_id": "Foo", "owner": current_user.username}]
@@ -41,7 +41,7 @@ def read_user(db: Annotated[Session, Depends(get_db)], user_id: int):
     return db_user
 
 
-@router.post("/{user_id}/items/", response_model=schemas.Item)
+@router.post("/{user_id}/status/", response_model=schemas.Item)
 def create_item_for_user(
     db: Annotated[Session, Depends(get_db)], item: schemas.ItemCreate, user_id: int
 ):

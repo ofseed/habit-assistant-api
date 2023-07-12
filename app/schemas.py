@@ -6,16 +6,16 @@ class Token(BaseModel):
     token_type: str
 
 
-class ItemBase(BaseModel):
+class StatusBase(BaseModel):
     title: str
     description: str | None = None
 
 
-class ItemCreate(ItemBase):
+class StatusCreate(StatusBase):
     pass
 
 
-class Item(ItemBase):
+class Status(StatusBase):
     id: int
     owner_id: int
 
@@ -34,7 +34,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     disabled: bool
-    items: list[Item] = []
+    status: list[Status] = []
 
     class Config:
         orm_mode = True

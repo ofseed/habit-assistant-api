@@ -12,15 +12,15 @@ class User(Base):
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
 
-    items = relationship("Item", back_populates="owner")
+    status = relationship("Item", back_populates="owner")
 
 
-class Item(Base):
-    __tablename__ = "items"
+class Status(Base):
+    __tablename__ = "status"
 
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String, index=True)
     description = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
-    owner = relationship("User", back_populates="items")
+    owner = relationship("User", back_populates="status")

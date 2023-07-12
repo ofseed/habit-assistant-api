@@ -11,10 +11,10 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-@app.get("/items/", response_model=list[schemas.Item])
-def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = crud.get_items(db, skip=skip, limit=limit)
-    return items
+@app.get("/status/", response_model=list[schemas.Item])
+def read_status(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    status = crud.get_status(db, skip=skip, limit=limit)
+    return status
 
 
 app.include_router(auth.router)
