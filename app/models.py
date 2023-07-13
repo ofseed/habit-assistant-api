@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, Date, Float, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -41,6 +41,7 @@ class Record(Base):
     screenStatus = Column(Boolean)
     latitude = Column(Float)
     longitude = Column(Float)
-    time = Column(DateTime)
+    time = Column(Time)
+    date = Column(Date)
 
     owner = relationship("User", back_populates="record")

@@ -7,7 +7,7 @@ class Token(BaseModel):
 
 
 class StatusBase(BaseModel):
-    title: str
+    owner_id: int
     description: str | None = None
 
 
