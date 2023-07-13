@@ -22,6 +22,7 @@ class StatusCreate(StatusBase):
 
 class Status(StatusBase):
     pass
+
     class Config:
         orm_mode = True
 
