@@ -19,8 +19,9 @@ class Status(Base):
     __tablename__ = "status"
 
     id = Column(Integer, primary_key=True, index=True)
-    start = Column(DateTime)
-    end = Column(DateTime)
+    start = Column(Time)
+    end = Column(Time)
+    date = Column(Date)
     statusS = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
