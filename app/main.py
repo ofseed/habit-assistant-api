@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app import crud, models, schemas
 from app.database import engine
 from app.dependencies import get_db
-from app.routers import auth, users
+from app.routers import auth, infer, users
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -19,3 +19,4 @@ def read_status(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 app.include_router(auth.router)
 app.include_router(users.router)
+app.include_router(infer.router)

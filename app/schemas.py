@@ -1,4 +1,6 @@
+from datetime import time
 from pydantic import BaseModel
+from datetime import date
 
 
 class Token(BaseModel):
@@ -7,8 +9,11 @@ class Token(BaseModel):
 
 
 class StatusBase(BaseModel):
-    title: str
-    description: str | None = None
+    owner_id: int
+    id: int
+    start: time
+    end: time
+    date: date
 
 
 class StatusCreate(StatusBase):
@@ -16,8 +21,34 @@ class StatusCreate(StatusBase):
 
 
 class Status(StatusBase):
+    pass
+
+    class Config:
+        orm_mode = True
+
+
+class RecordBase(BaseModel):
     id: int
     owner_id: int
+    gyroscopeX: float
+    gyroscopeY: float
+    gyroscopeZ: float
+    accelerateX: float
+    accelerateY: float
+    accelerateZ: float
+    screenStatus: bool
+    latitude: float
+    longitude: float
+    time: time
+    date: date
+
+
+class RecordCreate(RecordBase):
+    pass
+
+
+class Record(RecordBase):
+    pass
 
     class Config:
         orm_mode = True
