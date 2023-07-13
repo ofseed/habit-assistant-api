@@ -11,7 +11,7 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
-@app.get("/status/", response_model=list[schemas.Item])
+@app.get("/status/", response_model=list[schemas.Status])
 def read_status(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     status = crud.get_status(db, skip=skip, limit=limit)
     return status
