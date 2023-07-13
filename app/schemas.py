@@ -1,4 +1,6 @@
+from datetime import time
 from pydantic import BaseModel
+from datetime import date
 
 
 class Token(BaseModel):
@@ -8,7 +10,10 @@ class Token(BaseModel):
 
 class StatusBase(BaseModel):
     owner_id: int
-    description: str | None = None
+    id: int
+    start: time
+    end: time
+    date: date
 
 
 class StatusCreate(StatusBase):
@@ -16,9 +21,7 @@ class StatusCreate(StatusBase):
 
 
 class Status(StatusBase):
-    id: int
-    owner_id: int
-
+    pass
     class Config:
         orm_mode = True
 
