@@ -6,3 +6,4 @@ from sqlalchemy.orm import Session
 router = APIRouter(prefix="infer", tags=['infer'])
 
 @router.post("/send-status")
+

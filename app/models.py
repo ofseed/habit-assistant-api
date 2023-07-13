@@ -19,8 +19,9 @@ class Status(Base):
     __tablename__ = "status"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String, index=True)
+    start = Column(DateTime)
+    end = Column(DateTime)
+    statusS = Column(String)
     owner_id = Column(Integer, ForeignKey("users.id"))
 
     owner = relationship("User", back_populates="status")
