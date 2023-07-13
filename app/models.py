@@ -12,7 +12,7 @@ class User(Base):
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
 
-    status = relationship("Item", back_populates="owner")
+    status = relationship("Status", back_populates="owner")
 
 
 class Status(Base):

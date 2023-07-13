@@ -16,12 +16,12 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 
 def get_status(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
+    return db.query(models.Status).offset(skip).limit(limit).all()
 
 
-def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
+def create_user_status(db: Session, status: schemas.StatusCreate, user_id: int):
+    db_status = models.Status(**status.dict(), owner_id=user_id)
+    db.add(db_status)
     db.commit()
-    db.refresh(db_item)
-    return db_item
+    db.refresh(db_status)
+    return db_status
