@@ -27,6 +27,33 @@ class Status(StatusBase):
         orm_mode = True
 
 
+class RecordBase(BaseModel):
+    id: int
+    owner_id: int
+    gyroscopeX: float
+    gyroscopeY: float
+    gyroscopeZ: float
+    accelerateX: float
+    accelerateY: float
+    accelerateZ: float
+    screenStatus: bool
+    latitude: float
+    longitude: float
+    time: time
+    date: date
+
+
+class RecordCreate(RecordBase):
+    pass
+
+
+class Record(RecordBase):
+    pass
+
+    class Config:
+        orm_mode = True
+
+
 class UserBase(BaseModel):
     username: str
 
