@@ -28,8 +28,6 @@ class Status(StatusBase):
 
 
 class RecordBase(BaseModel):
-    id: int
-    owner_id: int
     gyroscopeX: float
     gyroscopeY: float
     gyroscopeZ: float
@@ -48,7 +46,7 @@ class RecordCreate(RecordBase):
 
 
 class Record(RecordBase):
-    pass
+    id: int
 
     class Config:
         orm_mode = True

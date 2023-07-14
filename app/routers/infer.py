@@ -15,11 +15,11 @@ router = APIRouter(prefix="/infer", tags=['infer'])
 @router.post("/send-status")
 async def receive_status(
     current_user: Annotated[schemas.User, Depends(get_current_active_user)],
-    user_record: schemas.RecordBase,
+    user_record: schemas.RecordCreate,
     background_task: BackgroundTasks,
     db: Annotated[Session, Depends(get_db)]
 ):
-    return [{"fuck you": get_users_record_number(db, current_user.id)}]
+    return [{"fuck you": get_users_record_number(db, 0)}]
 
 
 
