@@ -19,7 +19,8 @@ async def receive_status(
     background_task: BackgroundTasks,
     db: Annotated[Session, Depends(get_db)]
 ):
-    return [{"fuck you": get_users_record_number(db, 0)}]
+
+    return [{"fuck you": get_users_record_number(db, current_user.id)}]
 
 
 
