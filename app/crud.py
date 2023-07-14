@@ -6,8 +6,9 @@ from app import models, schemas
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
+
 def get_users_record_number(db: Session, user_id: int):
-    return len(db.query(models.Record).filter(models.Record.owner_id == user_id))
+    return len(db.query(models.Record).filter(models.Record.owner_id == user_id).all())
 
 
 def get_user_by_username(db: Session, username: str):
@@ -20,6 +21,14 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def get_status(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Status).offset(skip).limit(limit).all()
+
+
+def create_user_record(db: Session, record: schemas.RecordCreate, user_id: int):
+    db_record = models.Record(**record.dict(), owner_id=user_id)
+    db.add(db_record)
+    db.commit()
+    db.refresh(db_record)
+    return db_record
 
 
 def create_user_status(db: Session, status: schemas.StatusCreate, user_id: int):
