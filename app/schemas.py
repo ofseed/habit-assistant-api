@@ -1,4 +1,4 @@
-from datetime import date, datetime, time
+from datetime import date, datetime, time, timedelta
 
 from pydantic import BaseModel
 
@@ -91,7 +91,7 @@ class State(StateBase):
 
 class StatisticsBase(BaseModel):
     state: StateType
-    total_time: datetime
+    total_time: timedelta
     date: date
 
 
