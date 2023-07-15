@@ -9,11 +9,10 @@ class Token(BaseModel):
 
 
 class StatusBase(BaseModel):
-    owner_id: int
-    id: int
     start: time
     end: time
     date: date
+    statusS: str
 
 
 class StatusCreate(StatusBase):
@@ -28,8 +27,6 @@ class Status(StatusBase):
 
 
 class RecordBase(BaseModel):
-    id: int
-    owner_id: int
     gyroscopeX: float
     gyroscopeY: float
     gyroscopeZ: float
@@ -41,6 +38,7 @@ class RecordBase(BaseModel):
     longitude: float
     time: time
     date: date
+    place: str
 
 
 class RecordCreate(RecordBase):
@@ -48,7 +46,7 @@ class RecordCreate(RecordBase):
 
 
 class Record(RecordBase):
-    pass
+    id: int
 
     class Config:
         orm_mode = True
