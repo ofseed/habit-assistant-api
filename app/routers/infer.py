@@ -68,7 +68,7 @@ async def receive_status(
 
         create_user_record(db, user_record, current_user.id)
 
-    if record_number == 0:
+    elif record_number == 0:
         create_user_record(db, user_record, current_user.id)
     else:
         background_task.add_task(infer, records, current_user.id, model)
