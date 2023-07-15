@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -30,10 +30,10 @@ async def create_state_for_user(
 async def read_own_states(
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[schemas.User, Depends(get_current_active_user)],
-    start_time: datetime = None,
-    end_time: datetime = None,
+    start_date: date = None,
+    end_date: date = None,
 ):
-    return crud.get_user_states(db=db, user_id=current_user.id, start_time=start_time, end_time=end_time)
+    return crud.get_user_states(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
 
 
 @router.get("/me/status")
