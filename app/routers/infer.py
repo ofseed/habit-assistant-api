@@ -32,6 +32,7 @@ async def transform_records_to_torch(
         all_embeddings.append(one_embedding)
 
     all_embeddings = np.array(all_embeddings).astype("float32")
+    all_embeddings = np.expand_dims(all_embeddings, axis=0)
     all_embeddings = torch.Tensor(all_embeddings)
 
     return all_embeddings
@@ -72,4 +73,6 @@ async def receive_status(
         create_user_record(db, user_record, current_user.id)
     else:
         background_task.add_task(infer, records, current_user.id, model)
+        delete_users_record_all(db, current_user.id)
+
     return [{"msg": "success inject", "data": 0}]
