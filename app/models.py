@@ -45,5 +45,6 @@ class Record(Base):
     longitude = Column(Float)
     time = Column(Time)
     date = Column(Date)
+    place = Column(String)
 
     owner = relationship("User", back_populates="record")

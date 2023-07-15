@@ -39,6 +39,7 @@ class RecordBase(BaseModel):
     longitude: float
     time: time
     date: date
+    place: str
 
 
 class RecordCreate(RecordBase):
