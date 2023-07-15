@@ -27,7 +27,7 @@ class User(Base):
     disabled = Column(Boolean, default=False)
 
     states = relationship("State", back_populates="user")
-    state_statistics = relationship("StateStatistics", back_populates="user")
+    statistics = relationship("Statistics", back_populates="user")
 
     status = relationship("Status", back_populates="owner")
     record = relationship("Record", back_populates="owner")
@@ -61,6 +61,7 @@ class Statistics(Base):
     state = Column(Enum(StateType))
     total_time = Column(Interval)
     date = Column(Date)
+
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="statistics")
 
