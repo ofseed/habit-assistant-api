@@ -9,6 +9,7 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Integer,
+    Interval,
     String,
     Time,
 )
@@ -26,6 +27,7 @@ class User(Base):
     disabled = Column(Boolean, default=False)
 
     states = relationship("State", back_populates="user")
+    state_statistics = relationship("StateStatistics", back_populates="user")
 
     status = relationship("Status", back_populates="owner")
     record = relationship("Record", back_populates="owner")
@@ -50,6 +52,17 @@ class State(Base):
 
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="states")
+
+
+class Statistics(Base):
+    __tablename__ = "state_statistics"
+
+    id = Column(Integer, primary_key=True, index=True)
+    state = Column(Enum(StateType))
+    total_time = Column(Interval)
+    date = Column(Date)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="state_statistics")
 
 
 class Status(Base):

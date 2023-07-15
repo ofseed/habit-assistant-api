@@ -87,3 +87,21 @@ class State(StateBase):
 
     class Config:
         orm_mode = True
+
+
+class StatisticsBase(BaseModel):
+    state: StateType
+    total_time: datetime
+    date: date
+
+
+class StatisticsCreate(StatisticsBase):
+    pass
+
+
+class Statistics(StatisticsBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
