@@ -17,15 +17,6 @@ async def read_users_me(
     return current_user
 
 
-@router.post("/me/states/", response_model=schemas.State)
-async def create_state_for_user(
-    db: Annotated[Session, Depends(get_db)],
-    state: schemas.StateCreate,
-    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
-):
-    return crud.create_user_state(db=db, state=state, user_id=current_user.id)
-
-
 @router.get("/me/states/", response_model=list[schemas.State])
 async def read_own_states(
     db: Annotated[Session, Depends(get_db)],
@@ -34,6 +25,15 @@ async def read_own_states(
     end_date: date = None,
 ):
     return crud.get_user_states(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
+
+
+@router.post("/me/states/", response_model=schemas.State)
+async def create_state_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    state: schemas.StateCreate,
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+):
+    return crud.create_user_state(db=db, state=state, user_id=current_user.id)
 
 
 @router.get("/me/statistics/", response_model=schemas.Statistics)
