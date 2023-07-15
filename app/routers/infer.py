@@ -16,6 +16,7 @@ from typing import Annotated
 
 router = APIRouter(prefix="/infer", tags=['infer'])
 
+
 async def transform_records_to_torch(
         records: Record
 ):
@@ -29,8 +30,10 @@ async def transform_records_to_torch(
                          record.time.second]
         one_embedding += place_dict[record.place]
         all_embeddings.append(one_embedding)
+
     all_embeddings = np.array(all_embeddings).astype("float32")
     all_embeddings = torch.Tensor(all_embeddings)
+
     return all_embeddings
 
 
@@ -39,7 +42,9 @@ async def infer(
         user_id: int,
         model: ContextLSTM
 ):
-    pass
+    records_tensor = await transform_records_to_torch(records)
+    output = model(records_tensor)
+    print(output.shape)
 
 
 @router.post("/send-status")
@@ -52,14 +57,17 @@ async def receive_status(
 ):
     records = get_users_record_all(db, current_user.id)
     record_number = len(records)
+
     if 0 < record_number < 6:
         last_record = get_last_record(db, current_user.id)
         time_now = datetime.now()
         time_latest = datetime.combine(last_record.date, last_record.time)
+
         if (time_now - time_latest).seconds > 3600:
-            background_task.add_task(infer, records, current_user.id, model)
-        else:
-            create_user_record(db, user_record, current_user.id)
+            delete_users_record_all(db, current_user.id)
+
+        create_user_record(db, user_record, current_user.id)
+
     if record_number == 0:
         create_user_record(db, user_record, current_user.id)
     else:
