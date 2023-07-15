@@ -36,6 +36,25 @@ async def read_own_states(
     return crud.get_user_states(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
 
 
+@router.get("/me/statistics/", response_model=schemas.Statistics)
+async def read_own_statistics(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+    start_date: date = None,
+    end_date: date = None,
+):
+    return crud.get_user_statistics(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
+
+
+@router.post("/me/statistics/", response_model=schemas.Statistics)
+async def create_statistics_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    statistics: schemas.StatisticsCreate,
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+):
+    return crud.create_user_statistics(db=db, statistics=statistics, user_id=current_user.id)
+
+
 @router.get("/", response_model=list[schemas.User])
 def read_users(
     db: Annotated[Session, Depends(get_db)],

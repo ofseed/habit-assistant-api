@@ -89,3 +89,25 @@ def get_user_states(db: Session, user_id: int, start_date: date | None, end_date
         .filter(models.State.end_time <= end_time)
         .all()
     )
+
+
+def create_user_statistics(db: Session, statistics: schemas.StatisticsCreate, user_id: int):
+    db_statistics = models.Statistics(**statistics.dict(), user_id=user_id)
+    db.add(db_statistics)
+    db.commit()
+    db.refresh(db_statistics)
+    return db_statistics
+
+
+def get_user_statistics(db: Session, user_id: int, start_date: date | None, end_date: date | None):
+    if start_date is None:
+        start_date = datetime.now().date()
+    if end_date is None:
+        end_date = datetime.now().date()
+
+    return (
+        db.query(models.Statistics)
+        .filter(models.Statistics.user_id == user_id)
+        .filter(models.Statistics.sta >= start_date)
+        .filter(models.Statistics.date <= end_date)
+    )
