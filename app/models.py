@@ -55,14 +55,14 @@ class State(Base):
 
 
 class Statistics(Base):
-    __tablename__ = "state_statistics"
+    __tablename__ = "statistics"
 
     id = Column(Integer, primary_key=True, index=True)
     state = Column(Enum(StateType))
     total_time = Column(Interval)
     date = Column(Date)
     user_id = Column(Integer, ForeignKey("users.id"))
-    user = relationship("User", back_populates="state_statistics")
+    user = relationship("User", back_populates="statistics")
 
 
 class Status(Base):
