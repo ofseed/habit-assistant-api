@@ -2,7 +2,7 @@ from datetime import date, datetime, time
 
 from pydantic import BaseModel
 
-from models import StateType
+from app.models import StateType
 
 
 class Token(BaseModel):
