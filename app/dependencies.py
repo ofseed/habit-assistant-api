@@ -59,6 +59,7 @@ async def get_classifier():
     path = 'utils/ContextLSTMBeta.pth'
     model = ContextAwareness.ContextLSTM(14, 6)
     model.load_state_dict(torch.load(path))
+    model.eval()
     return model
 
 
