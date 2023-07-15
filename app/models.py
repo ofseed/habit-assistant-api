@@ -1,5 +1,17 @@
-from sqlalchemy import (Boolean, Column, Date, Float, ForeignKey, Integer,
-                        String, Time)
+from enum import Enum as PyEnum
+
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    DateTime,
+    Enum,
+    Float,
+    ForeignKey,
+    Integer,
+    String,
+    Time,
+)
 from sqlalchemy.orm import relationship
 
 from .database import Base
@@ -13,8 +25,31 @@ class User(Base):
     hashed_password = Column(String)
     disabled = Column(Boolean, default=False)
 
+    states = relationship("State", back_populates="user")
+
     status = relationship("Status", back_populates="owner")
     record = relationship("Record", back_populates="owner")
+
+
+class StateType(PyEnum):
+    LEARN = "学习"
+    COMMUTE = "通勤"
+    SLEEP = "睡觉"
+    EAT = "吃饭"
+    EXERCISE = "运动"
+    LEISURE = "摸鱼"
+
+
+class State(Base):
+    __tablename__ = "state"
+
+    id = Column(Integer, primary_key=True, index=True)
+    start_time = Column(DateTime)
+    end_time = Column(DateTime)
+    state = Column(Enum(StateType))
+
+    user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User", back_populates="states")
 
 
 class Status(Base):
