@@ -55,6 +55,15 @@ async def create_statistics_for_user(
     return crud.create_user_statistics(db=db, statistics=statistics, user_id=current_user.id)
 
 
+@router.patch("/me/statistics/")
+async def update_statistics_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    date: date,
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+):
+    return crud.update_user_statistics(db=db, date=date, user_id=current_user.id)
+
+
 @router.get("/", response_model=list[schemas.User])
 def read_users(
     db: Annotated[Session, Depends(get_db)],

@@ -99,6 +99,30 @@ def create_user_statistics(db: Session, statistics: schemas.StatisticsCreate, us
     return db_statistics
 
 
+def update_user_statistics(db: Session, date: date, user_id: int):
+    states = get_user_states(db, user_id, date, date)
+    for state_type in models.StateType:
+        total_time = sum(
+            [
+                (state.end_time - state.start_time).total_seconds()
+                for state in states
+                if state.state == state_type
+            ]
+        )
+        statistics = get_user_statistics(db, user_id, date, date).filter(
+            models.Statistics.state == state_type
+        )
+        if statistics.count() == 0:
+            create_user_statistics(
+                db,
+                schemas.StatisticsCreate(
+                    state=state_type, total_time=total_time, date=date
+                ),
+                user_id,
+            )
+    db.commit()
+
+
 def get_user_statistics(db: Session, user_id: int, start_date: date | None, end_date: date | None):
     if start_date is None:
         start_date = datetime.now().date()
