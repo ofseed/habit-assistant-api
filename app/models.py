@@ -41,7 +41,7 @@ class StateType(PyEnum):
 
 
 class State(Base):
-    __tablename__ = "state"
+    __tablename__ = "states"
 
     id = Column(Integer, primary_key=True, index=True)
     start_time = Column(DateTime)
