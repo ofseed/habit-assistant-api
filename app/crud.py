@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import desc
 from sqlalchemy.orm import Session
 
@@ -69,3 +71,17 @@ def create_user_state(db: Session, state: schemas.StateCreate, user_id: int):
     db.commit()
     db.refresh(db_state)
     return db_state
+
+
+def get_user_states(db: Session, user_id: int, start_time: datetime, end_time: datetime):
+    if start_time is None:
+        start_time = datetime.fromtimestamp(0)
+    if end_time is None:
+        end_time = datetime.now()
+    return (
+        db.query(models.State)
+        .filter(models.State.user_id == user_id)
+        .filter(models.State.time >= start_time)
+        .filter(models.State.time <= end_time)
+        .all()
+    )
