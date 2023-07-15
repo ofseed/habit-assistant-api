@@ -37,14 +37,6 @@ def get_status(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Status).offset(skip).limit(limit).all()
 
 
-def create_user_status(db: Session, status: schemas.StatusCreate, user_id: int):
-    db_status = models.Status(**status.dict(), owner_id=user_id)
-    db.add(db_status)
-    db.commit()
-    db.refresh(db_status)
-    return db_status
-
-
 def create_user_record(db: Session, record: schemas.RecordCreate, user_id: int):
     db_record = models.Record(**record.dict(), owner_id=user_id)
     db.add(db_record)
