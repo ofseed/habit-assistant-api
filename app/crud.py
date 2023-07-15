@@ -8,8 +8,8 @@ def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
 
-def get_users_record_number(db: Session, user_id: int):
-    return len(db.query(models.Record).filter(models.Record.owner_id == user_id).all())
+def get_users_record_all(db: Session, user_id: int):
+    return db.query(models.Record).filter(models.Record.owner_id == user_id).all()
 
 def get_last_record(db: Session, user_id: int):
     return db.query(models.Record).filter(models.Record.owner_id == user_id).order_by(desc(models.Record.time)).first()
