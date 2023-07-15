@@ -9,11 +9,10 @@ class Token(BaseModel):
 
 
 class StatusBase(BaseModel):
-    owner_id: int
-    id: int
     start: time
     end: time
     date: date
+    statusS: str
 
 
 class StatusCreate(StatusBase):

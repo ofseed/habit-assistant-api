@@ -24,6 +24,7 @@ def get_last_record(db: Session, user_id: int):
 def get_earliest_record(db: Session, user_id: int):
     return db.query(models.Record).filter(models.Record.owner_id == user_id).order_by(models.Record.time).first()
 
+
 def get_user_by_username(db: Session, username: str):
     return db.query(models.User).filter(models.User.username == username).first()
 
@@ -34,6 +35,14 @@ def get_users(db: Session, skip: int = 0, limit: int = 100):
 
 def get_status(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Status).offset(skip).limit(limit).all()
+
+
+def create_user_status(db: Session, status: schemas.StatusCreate, user_id: int):
+    db_status = models.Status(**status.dict(), owner_id=user_id)
+    db.add(db_status)
+    db.commit()
+    db.refresh(db_status)
+    return db_status
 
 
 def create_user_record(db: Session, record: schemas.RecordCreate, user_id: int):
