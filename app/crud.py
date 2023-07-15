@@ -110,4 +110,5 @@ def get_user_statistics(db: Session, user_id: int, start_date: date | None, end_
         .filter(models.Statistics.user_id == user_id)
         .filter(models.Statistics.date >= start_date)
         .filter(models.Statistics.date <= end_date)
+        .all()
     )
