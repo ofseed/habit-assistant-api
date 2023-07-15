@@ -43,5 +43,6 @@ def read_user(db: Annotated[Session, Depends(get_db)], user_id: int):
 
 @router.post("/{user_id}/status/", response_model=schemas.Status)
 def create_status_for_user(
-    db: Annotated[Session, Depends(get_db)], status: schemas.StatusCreate, user_id: int):
+    db: Annotated[Session, Depends(get_db)], status: schemas.StatusCreate, user_id: int
+):
     return crud.create_user_status(db=db, status=status, user_id=user_id)

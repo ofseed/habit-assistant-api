@@ -18,11 +18,21 @@ def get_users_record_all(db: Session, user_id: int):
 
 
 def get_last_record(db: Session, user_id: int):
-    return db.query(models.Record).filter(models.Record.owner_id == user_id).order_by(desc(models.Record.time)).first()
+    return (
+        db.query(models.Record)
+        .filter(models.Record.owner_id == user_id)
+        .order_by(desc(models.Record.time))
+        .first()
+    )
 
 
 def get_earliest_record(db: Session, user_id: int):
-    return db.query(models.Record).filter(models.Record.owner_id == user_id).order_by(models.Record.time).first()
+    return (
+        db.query(models.Record)
+        .filter(models.Record.owner_id == user_id)
+        .order_by(models.Record.time)
+        .first()
+    )
 
 
 def get_user_by_username(db: Session, username: str):

@@ -1,6 +1,6 @@
-from datetime import time
+from datetime import date, time
+
 from pydantic import BaseModel
-from datetime import date
 
 
 class Token(BaseModel):
