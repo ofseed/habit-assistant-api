@@ -36,13 +36,6 @@ async def read_own_states(
     return crud.get_user_states(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
 
 
-@router.get("/me/status")
-async def read_own_status(
-    current_user: Annotated[schemas.User, Depends(get_current_active_user)]
-):
-    return [{"status_id": "Foo", "owner": current_user.username}]
-
-
 @router.get("/", response_model=list[schemas.User])
 def read_users(
     db: Annotated[Session, Depends(get_db)],
@@ -59,10 +52,3 @@ def read_user(db: Annotated[Session, Depends(get_db)], user_id: int):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
-
-
-@router.post("/{user_id}/status/", response_model=schemas.Status)
-def create_status_for_user(
-    db: Annotated[Session, Depends(get_db)], status: schemas.StatusCreate, user_id: int
-):
-    return crud.create_user_status(db=db, status=status, user_id=user_id)
