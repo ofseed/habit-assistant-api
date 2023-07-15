@@ -43,9 +43,11 @@ async def infer(
         user_id: int,
         model: ContextLSTM
 ):
+    status_dict = {5: "学习", 4: "通勤", 3: "睡觉", 2: "吃饭", 1: "运动", 0: "摸鱼"}
     records_tensor = await transform_records_to_torch(records)
     output = model(records_tensor)
-    print(output.shape)
+    index = torch.argmax(output)
+    print(status_dict[int(index)])
 
 
 @router.post("/send-status")
