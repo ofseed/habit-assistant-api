@@ -16,6 +16,15 @@ async def read_users_me(
     return current_user
 
 
+@router.post("/me/states/", response_model=schemas.State)
+async def create_state_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    state: schemas.StateCreate,
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+):
+    return crud.create_user_state(db=db, state=state, user_id=current_user.id)
+
+
 @router.get("/me/status")
 async def read_own_status(
     current_user: Annotated[schemas.User, Depends(get_current_active_user)]

@@ -61,3 +61,11 @@ def create_user_status(db: Session, status: schemas.StatusCreate, user_id: int):
     db.commit()
     db.refresh(db_status)
     return db_status
+
+
+def create_user_state(db: Session, state: schemas.StateCreate, user_id: int):
+    db_state = models.State(**state.dict(), user_id=user_id)
+    db.add(db_state)
+    db.commit()
+    db.refresh(db_state)
+    return db_state
