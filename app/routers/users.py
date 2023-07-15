@@ -36,7 +36,7 @@ async def create_state_for_user(
     return crud.create_user_state(db=db, state=state, user_id=current_user.id)
 
 
-@router.get("/me/statistics/", response_model=schemas.Statistics)
+@router.get("/me/statistics/", response_model=list[schemas.Statistics])
 async def read_own_statistics(
     db: Annotated[Session, Depends(get_db)],
     current_user: Annotated[schemas.User, Depends(get_current_active_user)],
