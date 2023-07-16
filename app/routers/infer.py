@@ -58,10 +58,15 @@ async def create_users_status(db: Session, user_id: int, status: StateType):
     start_date = earliest_record.date
 
     end = datetime.combine(end_date, end)
-    start = datetime.combine(earliest_record, start)
+    start = datetime.combine(start_date, start)
 
     for_create = schemas.StateCreate(start_time=start, end_time=end, state=status)
-    create_user_state(db, for_create, user_id)
+
+    last_state = get_user_states(db, user_id, None, None)
+    if last_state[0].state == status:
+        update_user_last_states(db, user_id, end)
+    else:
+        create_user_state(db, for_create, user_id)
 
 
 async def infer(db: Session, records: Record, user_id: int, model: ContextLSTM):

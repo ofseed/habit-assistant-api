@@ -60,6 +60,15 @@ def create_user_state(db: Session, state: schemas.StateCreate, user_id: int):
     db.refresh(db_state)
     return db_state
 
+def update_user_last_states(db: Session, user_id, end_time: models.State.end_time):
+    db.query(models.State)\
+        .filter(models.State.user_id == user_id)\
+        .order_by(models.State.end_time)\
+        .first()\
+        .update({models.State.end_time: end_time})
+
+    db.commit()
+
 
 def get_user_states(db: Session, user_id: int, start_date: date | None, end_date: date | None):
     if start_date is None and end_date is None:
