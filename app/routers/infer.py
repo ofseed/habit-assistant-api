@@ -57,7 +57,7 @@ async def create_users_status(db: Session, user_id: int, status: StateType):
     end = datetime.combine(date, end)
     start = datetime.combine(date, start)
 
-    for_create = schemas.StateCreate(start=start, end=end, state=status)
+    for_create = schemas.StateCreate(start_time=start, end_time=end, state=status)
     create_user_state(db, for_create, user_id)
 
 
