@@ -56,7 +56,7 @@ async def get_current_user(
 
 async def get_classifier():
     path = "app/utils/ContextLSTM.pth"
-    model = ContextAwareness.ContextLSTM(14, 6)
+    model = ContextAwareness.ContextLSTM(12, 6)
     model.load_state_dict(torch.load(path))
     model.eval()
     return model
