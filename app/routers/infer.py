@@ -50,12 +50,15 @@ async def transform_records_to_torch(records: Record):
 
 
 async def create_users_status(db: Session, user_id: int, status: StateType):
-    end = get_last_record(db, user_id).time
-    start = get_earliest_record(db, user_id).time
-    date = dt.date.today()
+    last_record = get_last_record(db, user_id)
+    earliest_record = get_earliest_record(db, user_id)
+    end = last_record.time
+    start = earliest_record.time
+    end_date = last_record.date
+    start_date = earliest_record.date
 
-    end = datetime.combine(date, end)
-    start = datetime.combine(date, start)
+    end = datetime.combine(end_date, end)
+    start = datetime.combine(earliest_record, start)
 
     for_create = schemas.StateCreate(start_time=start, end_time=end, state=status)
     create_user_state(db, for_create, user_id)
