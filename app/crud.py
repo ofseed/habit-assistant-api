@@ -104,15 +104,16 @@ def update_user_statistics(db: Session, date: date, user_id: int):
             .filter(models.Statistics.state == state_type)
             .all()
         )
-        if statistics.count() == 0:
-            create_user_statistics(
-                db,
-                schemas.StatisticsCreate(
-                    state=state_type, total_time=total_time, date=date
-                ),
-                user_id,
+        if len(statistics) == 0:
+            statistics = models.Statistics(
+                state=state_type, total_time=total_time, date=date, user_id=user_id
             )
-    db.commit()
+            db.add(statistics)
+        else:
+            statistics = statistics[0]
+            statistics.total_time = total_time
+        db.commit()
+        db.refresh(statistics)
 
 
 def get_user_statistics(db: Session, user_id: int, start_date: date | None, end_date: date | None):
