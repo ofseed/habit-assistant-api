@@ -40,6 +40,9 @@ class StateType(PyEnum):
     EXERCISE = "运动"
     LEISURE = "摸鱼"
 
+    def __str__(self):
+        return self.value
+
 
 class State(Base):
     __tablename__ = "states"
