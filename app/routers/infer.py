@@ -15,6 +15,9 @@ from app.utils.ContextAwareness import ContextFormer, ContextLSTM
 
 router = APIRouter(prefix="/infer", tags=["infer"])
 
+async def laplace(sensitivety, epsilon):
+    n_value = np.random.laplace(0, sensitivety / epsilon, 1)
+    return float(n_value)
 
 async def transform_records_to_torch(records: Record):
     place_dict = {
@@ -77,6 +80,19 @@ async def infer(db: Session, records: Record, user_id: int, model: ContextLSTM):
     delete_users_record_all(db, user_id)
 
 
+async def create_laplace_record(
+    db: Session,
+    user_record: schemas.RecordCreate,
+    user_id: int
+):
+    user_record.accelerateX += await laplace(1, 10)
+    user_record.accelerateY += await laplace(1, 10)
+    user_record.accelerateZ += await laplace(1, 10)
+    user_record.gyroscopeX += await laplace(1, 10)
+    user_record.gyroscopeZ += await laplace(1, 10)
+    user_record.gyroscopeY += await laplace(1, 10)
+    create_user_record(db, user_record, user_id)
+
 # get data, judge that whether user's status should be infered or not
 @router.post("/send-status")
 async def receive_status(
@@ -98,10 +114,10 @@ async def receive_status(
         if (time_now - time_latest).seconds > 3600:
             delete_users_record_all(db, current_user.id)
 
-        create_user_record(db, user_record, current_user.id)
+        await create_laplace_record(db, user_record, current_user.id)
 
     elif record_number == 0:
-        create_user_record(db, user_record, current_user.id)
+        await create_laplace_record(db, user_record, current_user.id)
     else:
         background_task.add_task(infer, db, records, current_user.id, model)
 
