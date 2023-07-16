@@ -1,5 +1,6 @@
 from typing import Annotated
 
+import torch
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
@@ -10,8 +11,6 @@ from app.crud import get_user
 from app.database import SessionLocal
 from app.models import User
 from app.utils import ContextAwareness
-
-import torch
 
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
 ALGORITHM = "HS256"
@@ -33,8 +32,8 @@ class TokenData(BaseModel):
 
 
 async def get_current_user(
-        token: Annotated[str, Depends(oauth2_scheme)],
-        db: Annotated[Session, Depends(get_db)],
+    token: Annotated[str, Depends(oauth2_scheme)],
+    db: Annotated[Session, Depends(get_db)],
 ):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -56,7 +55,7 @@ async def get_current_user(
 
 
 async def get_classifier():
-    path = 'app/utils/ContextLSTMBeta.pth'
+    path = "app/utils/ContextLSTMBeta.pth"
     model = ContextAwareness.ContextLSTM(14, 6)
     model.load_state_dict(torch.load(path))
     model.eval()
@@ -64,7 +63,7 @@ async def get_classifier():
 
 
 async def get_current_active_user(
-        current_user: Annotated[User, Depends(get_current_user)]
+    current_user: Annotated[User, Depends(get_current_user)]
 ):
     if current_user.disabled:
         raise HTTPException(status_code=400, detail="Inactive user")

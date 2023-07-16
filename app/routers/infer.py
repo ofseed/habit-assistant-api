@@ -1,35 +1,43 @@
-import numpy as np
-import torch
-
-from app import schemas
-from app.dependencies import get_current_active_user, get_db, get_classifier
-from app.crud import *
-from app.models import Record
-from app.utils.ContextAwareness import ContextLSTM, ContextFormer
-
-from datetime import datetime
 import datetime as dt
-
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
-
-from sqlalchemy.orm import Session
+from datetime import datetime
 from typing import Annotated
 
-router = APIRouter(prefix="/infer", tags=['infer'])
+import numpy as np
+import torch
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
+from sqlalchemy.orm import Session
+
+from app import schemas
+from app.crud import *
+from app.dependencies import get_classifier, get_current_active_user, get_db
+from app.models import Record
+from app.utils.ContextAwareness import ContextFormer, ContextLSTM
+
+router = APIRouter(prefix="/infer", tags=["infer"])
 
 
-async def transform_records_to_torch(
-        records: Record
-):
-    place_dict = {"食堂": [0, 0, 1, 0], "教室": [1, 0, 0, 0], "宿舍": [0, 1, 0, 0],
-                  "其他": [0, 0, 0, 1]}
+async def transform_records_to_torch(records: Record):
+    place_dict = {
+        "食堂": [0, 0, 1, 0],
+        "教室": [1, 0, 0, 0],
+        "宿舍": [0, 1, 0, 0],
+        "其他": [0, 0, 0, 1],
+    }
     all_embeddings = []
     # to traverse each records, add it's parameter into list and convert list to tensor
     for record in records:
-        one_embedding = [record.gyroscopeX, record.gyroscopeY, record.gyroscopeZ,
-                         record.accelerateX, record.accelerateY, record.accelerateZ,
-                         record.screenStatus, record.time.hour, record.time.minute,
-                         record.time.second]
+        one_embedding = [
+            record.gyroscopeX,
+            record.gyroscopeY,
+            record.gyroscopeZ,
+            record.accelerateX,
+            record.accelerateY,
+            record.accelerateZ,
+            record.screenStatus,
+            record.time.hour,
+            record.time.minute,
+            record.time.second,
+        ]
         one_embedding += place_dict[record.place]
         all_embeddings.append(one_embedding)
     # convert form
@@ -40,11 +48,7 @@ async def transform_records_to_torch(
     return all_embeddings
 
 
-async def create_users_status(
-        db: Session,
-        user_id: int,
-        status: str
-):
+async def create_users_status(db: Session, user_id: int, status: str):
     end = get_last_record(db, user_id).time
     start = get_earliest_record(db, user_id).time
     date = dt.date.today()
@@ -53,12 +57,7 @@ async def create_users_status(
     create_user_status(db, for_create, user_id)
 
 
-async def infer(
-        db: Session,
-        records: Record,
-        user_id: int,
-        model: ContextLSTM
-):
+async def infer(db: Session, records: Record, user_id: int, model: ContextLSTM):
     status_dict = {5: "学习", 4: "通勤", 3: "睡觉", 2: "吃饭", 1: "运动", 0: "摸鱼"}
 
     # to get infer
@@ -76,11 +75,11 @@ async def infer(
 # get data, judge that whether user's status should be infered or not
 @router.post("/send-status")
 async def receive_status(
-        current_user: Annotated[schemas.User, Depends(get_current_active_user)],
-        user_record: schemas.RecordCreate,
-        background_task: BackgroundTasks,
-        db: Annotated[Session, Depends(get_db)],
-        model: Annotated[ContextLSTM, Depends(get_classifier)]
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+    user_record: schemas.RecordCreate,
+    background_task: BackgroundTasks,
+    db: Annotated[Session, Depends(get_db)],
+    model: Annotated[ContextLSTM, Depends(get_classifier)],
 ):
     records = get_users_record_all(db, current_user.id)
     record_number = len(records)

@@ -1,6 +1,8 @@
-from datetime import time
+from datetime import date, datetime, time, timedelta
+
 from pydantic import BaseModel
-from datetime import date
+
+from app.models import StateType
 
 
 class Token(BaseModel):
@@ -64,6 +66,42 @@ class User(UserBase):
     id: int
     disabled: bool
     status: list[Status] = []
+
+    class Config:
+        orm_mode = True
+
+
+class StateBase(BaseModel):
+    start_time: datetime
+    end_time: datetime
+    state: StateType
+
+
+class StateCreate(StateBase):
+    pass
+
+
+class State(StateBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
+
+
+class StatisticsBase(BaseModel):
+    state: StateType
+    total_time: timedelta
+    date: date
+
+
+class StatisticsCreate(StatisticsBase):
+    pass
+
+
+class Statistics(StatisticsBase):
+    id: int
+    user_id: int
 
     class Config:
         orm_mode = True

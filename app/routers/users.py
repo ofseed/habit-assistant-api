@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -16,11 +17,42 @@ async def read_users_me(
     return current_user
 
 
-@router.get("/me/status")
-async def read_own_status(
-    current_user: Annotated[schemas.User, Depends(get_current_active_user)]
+@router.get("/me/states/", response_model=list[schemas.State])
+async def read_own_states(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+    start_date: date = None,
+    end_date: date = None,
 ):
-    return [{"status_id": "Foo", "owner": current_user.username}]
+    return crud.get_user_states(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
+
+
+@router.post("/me/states/", response_model=schemas.State)
+async def create_state_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    state: schemas.StateCreate,
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+):
+    return crud.create_user_state(db=db, state=state, user_id=current_user.id)
+
+
+@router.get("/me/statistics/", response_model=list[schemas.Statistics])
+async def read_own_statistics(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+    start_date: date = None,
+    end_date: date = None,
+):
+    return crud.get_user_statistics(db=db, user_id=current_user.id, start_date=start_date, end_date=end_date)
+
+
+@router.patch("/me/statistics/")
+async def update_statistics_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    date: date,
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+):
+    return crud.update_user_statistics(db=db, date=date, user_id=current_user.id)
 
 
 @router.get("/", response_model=list[schemas.User])
@@ -39,9 +71,3 @@ def read_user(db: Annotated[Session, Depends(get_db)], user_id: int):
     if db_user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return db_user
-
-
-@router.post("/{user_id}/status/", response_model=schemas.Status)
-def create_status_for_user(
-    db: Annotated[Session, Depends(get_db)], status: schemas.StatusCreate, user_id: int):
-    return crud.create_user_status(db=db, status=status, user_id=user_id)
