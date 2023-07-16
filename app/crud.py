@@ -102,7 +102,6 @@ def update_user_statistics(db: Session, date: date, user_id: int):
             .filter(models.Statistics.user_id == user_id)
             .filter(models.Statistics.date == date)
             .filter(models.Statistics.state == state_type)
-            .all()
         )
         if statistics.count() == 0:
             create_user_statistics(
