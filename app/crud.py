@@ -62,6 +62,14 @@ def create_user_state(db: Session, state: schemas.StateCreate, user_id: int):
 
 
 def get_user_states(db: Session, user_id: int, start_date: date | None, end_date: date | None):
+    if start_date is None and end_date is None:
+        return [(
+            db.query(models.State)
+            .filter(models.State.user_id == user_id)
+            .order_by(models.State.end_time)
+            .first()
+        )]
+
     if start_date is None:
         start_date = datetime.now().date()
     if end_date is None:
