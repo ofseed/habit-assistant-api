@@ -38,8 +38,6 @@ async def transform_records_to_torch(records: Record):
             record.accelerateZ,
             record.screenStatus,
             record.time.hour,
-            record.time.minute,
-            record.time.second,
         ]
         one_embedding += place_dict[record.place]
         all_embeddings.append(one_embedding)
