@@ -10,24 +10,6 @@ class Token(BaseModel):
     token_type: str
 
 
-class StatusBase(BaseModel):
-    start: time
-    end: time
-    date: date
-    statusS: str
-
-
-class StatusCreate(StatusBase):
-    pass
-
-
-class Status(StatusBase):
-    pass
-
-    class Config:
-        orm_mode = True
-
-
 class RecordBase(BaseModel):
     gyroscopeX: float
     gyroscopeY: float
@@ -65,7 +47,6 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     disabled: bool
-    status: list[Status] = []
 
     class Config:
         orm_mode = True

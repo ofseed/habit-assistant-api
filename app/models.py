@@ -29,7 +29,6 @@ class User(Base):
     states = relationship("State", back_populates="user")
     statistics = relationship("Statistics", back_populates="user")
 
-    status = relationship("Status", back_populates="owner")
     record = relationship("Record", back_populates="owner")
 
 
@@ -64,19 +63,6 @@ class Statistics(Base):
 
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User", back_populates="statistics")
-
-
-class Status(Base):
-    __tablename__ = "status"
-
-    id = Column(Integer, primary_key=True, index=True)
-    start = Column(Time)
-    end = Column(Time)
-    date = Column(Date)
-    statusS = Column(String)
-    owner_id = Column(Integer, ForeignKey("users.id"))
-
-    owner = relationship("User", back_populates="status")
 
 
 class Record(Base):
