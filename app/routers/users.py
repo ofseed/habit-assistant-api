@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
+from app.models import StateType
 from app.utils import chat
 from app.dependencies import get_current_active_user, get_db
 
@@ -68,6 +69,25 @@ async def update_statistics_for_user(
     current_user: Annotated[schemas.User, Depends(get_current_active_user)],
 ):
     return crud.update_user_statistics(db=db, date=date, user_id=current_user.id)
+
+
+@router.get("/me/statistics/recommendation/")
+async def get_recommendation_for_user(
+    db: Annotated[Session, Depends(get_db)],
+    current_user: Annotated[schemas.User, Depends(get_current_active_user)],
+    date: date
+):
+    statistics_list = crud.get_user_statistics(db, current_user.id, date, date)
+    state_repr = []
+    for statistics in statistics_list:
+        state_repr.append(f"{statistics.state} {statistics.total_time}")
+    prompt = f"""
+    以下是我今天进行的行为统计：
+    {state_repr}
+    """
+    return chat.get_completion(
+        prompt,
+    )
 
 
 @router.get("/", response_model=list[schemas.User])
