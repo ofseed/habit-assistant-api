@@ -61,10 +61,13 @@ def create_user_state(db: Session, state: schemas.StateCreate, user_id: int):
     return db_state
 
 def update_user_last_states(db: Session, user_id, end_time: models.State.end_time):
-    db.query(models.State)\
+    last_state = db.query(models.State)\
         .filter(models.State.user_id == user_id)\
         .order_by(models.State.end_time)\
-        .first()\
+        .first()
+    db.query(models.State)\
+        .filter(models.State.user_id == user_id)\
+        .filter(models.State.end_time == last_state.end_time)\
         .update({models.State.end_time: end_time})
 
     db.commit()
