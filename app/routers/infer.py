@@ -10,7 +10,7 @@ from sqlalchemy.orm import Session
 from app import schemas
 from app.crud import *
 from app.dependencies import get_classifier, get_current_active_user, get_db
-from app.models import Record
+from app.models import Record, StateType
 from app.utils.ContextAwareness import ContextFormer, ContextLSTM
 
 router = APIRouter(prefix="/infer", tags=["infer"])
@@ -48,17 +48,22 @@ async def transform_records_to_torch(records: Record):
     return all_embeddings
 
 
-async def create_users_status(db: Session, user_id: int, status: str):
+async def create_users_status(db: Session, user_id: int, status: StateType):
     end = get_last_record(db, user_id).time
     start = get_earliest_record(db, user_id).time
     date = dt.date.today()
 
-    for_create = schemas.StatusCreate(start=start, end=end, date=date, statusS=status)
-    create_user_status(db, for_create, user_id)
+    end = datetime.combine(date, end)
+    start = datetime.combine(date, start)
+
+    for_create = schemas.StateCreate(start=start, end=end, state=status)
+    create_user_state(db, for_create, user_id)
 
 
 async def infer(db: Session, records: Record, user_id: int, model: ContextLSTM):
-    status_dict = {5: "学习", 4: "通勤", 3: "睡觉", 2: "吃饭", 1: "运动", 0: "摸鱼"}
+    status_dict = {5: StateType.LEARN, 4: StateType.COMMUTE,
+                   3: StateType.SLEEP, 2: StateType.EAT,
+                   1: StateType.EXERCISE, 0: StateType.LEISURE}
 
     # to get infer
     records_tensor = await transform_records_to_torch(records)
